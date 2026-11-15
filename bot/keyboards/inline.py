@@ -12,7 +12,7 @@ async def throw_ticket_keyboard(session: AsyncSession, current_user: int):
     
     for user in users:
         if user.tg_id != current_user:
-            button = InlineKeyboardButton(text=user.full_name, callback_data=f"user:{user.tg_id}")  # Создаем кнопку для каждого пользователя
+            button = InlineKeyboardButton(text=f"{user.full_name} ({user.username})", callback_data=f"user:{user.tg_id}")  # Создаем кнопку для каждого пользователя
             keyboard.inline_keyboard.append([button])  # Добавляем кнопку в клавиатуру
     keyboard.inline_keyboard.append([InlineKeyboardButton(text="Отмена", callback_data="cancel_ticket_callback")])  # Добавляем кнопку "Отмена"
     return keyboard

@@ -1,6 +1,7 @@
 from aiogram import Router, F
 from aiogram.types import Message, CallbackQuery, ReplyKeyboardRemove
 from aiogram.filters import StateFilter, Command
+from aiogram.exceptions import TelegramForbiddenError
 from sqlalchemy.ext.asyncio import AsyncSession
 from aiogram.fsm.context import FSMContext
 
@@ -93,6 +94,12 @@ async def process_ticket_cause(message: Message, state: FSMContext, session: Asy
         user_to_id, cause
         )
     await state.clear()
+
+    user = await get_user(session, message.from_user.id)
+    try:
+        await message.bot.send_message(user_to_id, f"Вам тикет от {user.full_name}:\n{cause}")
+    except TelegramForbiddenError:
+        await message.answer("Тикет сохранён, но получатель заблокировал бота.")
 
     user = await get_user(session, user_to_id)
     if user is None:
