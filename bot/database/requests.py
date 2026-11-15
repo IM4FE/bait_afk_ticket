@@ -4,7 +4,7 @@ from bot.database.models import User, Ticket
 
 
 async def add_user(session: AsyncSession, tg_id: int, full_name: str, username: str | None = None) -> None:
-    """Добавляет пользователя, если его еще нет в базе."""
+    """Добавляет/обновляет пользователя."""
     query = select(User).where(User.tg_id == tg_id)
     result = await session.execute(query)
     user = result.scalar_one_or_none()
@@ -18,9 +18,18 @@ async def add_user(session: AsyncSession, tg_id: int, full_name: str, username: 
         session.add(new_user)
         await session.commit()
     elif user.username != username:
-        user.full_name = full_name
         user.username = username
         await session.commit()
+
+async def add_ticket(session: AsyncSession, user_from: int, user_to: int, cause: str) -> None:
+    """Добавляет тикет в базу данных."""
+    new_ticket = Ticket(
+        user_from=user_from,
+        user_to=user_to,
+        cause=cause
+    )
+    session.add(new_ticket)
+    await session.commit()
 
 async def get_user(session: AsyncSession, tg_id: int) -> User | None:
     """Возвращает объект пользователя по его Telegram ID."""

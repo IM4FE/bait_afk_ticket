@@ -1,5 +1,5 @@
 from datetime import datetime
-from sqlalchemy import BigInteger, String, DateTime , Integer, func
+from sqlalchemy import BigInteger, String, DateTime, Text, func
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 
 
@@ -23,4 +23,4 @@ class Ticket(Base):
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     user_from: Mapped[int] = mapped_column(BigInteger)
     user_to: Mapped[int] = mapped_column(BigInteger)
-    cause: Mapped[str] = mapped_column(String(128))
+    cause: Mapped[str] = mapped_column(Text)
